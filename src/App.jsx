@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-client';
+import { createClient } from '@supabase/supabase-js';
 
 // Инициализация базы данных через прокинутые ключи
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
