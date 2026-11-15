@@ -58,9 +58,12 @@ export default function App() {
   // Загрузка товаров из нашего будущего API
   useEffect(() => {
     fetch('/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.log("Ожидание бэкенд-данных..."));
+      .then(res => {
+        if (!res.ok) throw new Error('Catalog unavailable');
+        return res.json();
+      })
+      .then(data => setProducts(Array.isArray(data) ? data : []))
+      .catch(() => setProducts([]));
   }, []);
 
   // Рабочая регистрация в Supabase Auth
@@ -121,7 +124,7 @@ export default function App() {
         <div>
           <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-400 mb-6">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            <span>Live — 12,400 explorers online</span>
+            <span>COSMEX — тестовая версия</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 bg-gradient-to-r from-white via-gray-200 to-purple-400 bg-clip-text text-transparent">
             {t.title}
@@ -153,11 +156,11 @@ export default function App() {
 
       {/* Сетка динамических товаров из бэкенда */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold mb-6 text-purple-400">Импортированные товары из маркетплейсов:</h2>
+        <h2 className="text-2xl font-bold mb-6 text-purple-400">Каталог товаров:</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {products.length === 0 ? (
             <div className="col-span-4 text-center py-10 border border-dashed border-white/10 rounded-xl text-gray-500">
-              Товары обновляются крон-скриптом. Выполните первый импорт.
+              Пока нет опубликованных товаров или каталог недоступен.
             </div>
           ) : (
             products.map((p) => (
